@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { faqs } from "./data";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Accordion data={faqs} />
     </div>
   );
 }
 
-export default App;
+function Accordion({ data }) {
+  const [curOpen, setCurOpen] = useState(null);
+
+  return (
+    <div className="accordion">
+      {data.map((el, idx) => (
+        <AccordionItem
+          num={idx}
+          title={el.title}
+          key={el.title}
+          curOpen={curOpen}
+          onOpen={setCurOpen}>
+          {el.text}
+        </AccordionItem>
+      ))}
+    </div>
+  );
+}
+
+function AccordionItem({ num, title, curOpen, onOpen, children }) {
+  const isOpen = curOpen === num;
+
+  function handleToggle() {
+    onOpen(isOpen ? null : num);
+  }
+  return (
+    <div className={isOpen ? "item open" : "item"} onClick={handleToggle}>
+      <p className="number">{num < 9 ? `0${num + 1}` : num + 1}</p>
+      <p className="title">{title}</p>
+      <p className="icon">{isOpen ? "-" : "+"}</p>
+      {isOpen && <div className="content-box">{children}</div>}
+    </div>
+  );
+}
